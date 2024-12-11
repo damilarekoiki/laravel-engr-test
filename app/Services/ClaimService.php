@@ -18,4 +18,14 @@ class ClaimService {
         }, $claimItems);
     }
 
+    public function prepareClaimData(array $data): array {
+        // Claim's items
+        $data['claim_items'] = $this->transformClaimItems($data['claim_items']);
+
+        // Total amount (or monetary value) of claim
+        $data['total_amount']= $this->calculateTotalAmount($data['claim_items']);
+
+        return $data;
+    }
+
 }

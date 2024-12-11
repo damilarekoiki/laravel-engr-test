@@ -19,13 +19,9 @@ class ClaimController extends Controller
 
     public function store(ClaimRequest $request) {
         $claimData = $request->validated();
-
-        // Claim's items
-        $claimData['claim_items'] = $this->claimService->transformClaimItems($claimData['claim_items']);
-
-        // Total amount (or monetary value) of claim
-        $claimData['total_amount']= $this->claimService->calculateTotalAmount($claimData['claim_items']);
         
+        $claimData = $this->claimService->prepareClaimData($claimData);
+
         $this->claimRepository->storeClaimWithItems($claimData);
     }
 }
