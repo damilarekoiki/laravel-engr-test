@@ -35,10 +35,23 @@ class ClaimRequest extends FormRequest
     {
         return [
             'insurer_id' => ['required'],
+            'insurer_code' => [
+            function ($attribute, $value, $fail) {
+                if (empty($this->insurer_id)) {
+                    $fail("The $attribute does not exist.");
+                }
+            }],
             'specialty_id' => ['required', 'exists:specialties,id'],
             'provider_id' => ['required'],
+            'provider_name' => [
+            function ($attribute, $value, $fail) {
+                if (empty($this->provider_id)) {
+                    $fail("The $attribute does not exist.");
+                }
+            }],
             'encounter_date' => ['required', 'date'],
             'priority_level' => ['required', Rule::enum(ClaimPriorityEnum::class)],
+            'claim_items' => ['required', 'array'],
             'claim_items.*.name' => ['required'],
             'claim_items.*.unit_price' => ['required', 'numeric'],
             'claim_items.*.quantity' => ['required', 'numeric'],

@@ -26,7 +26,7 @@ class InsurerFactory extends Factory
             'daily_processing_capacity' => fake()->numberBetween(1, 100),
             'minimum_batch_size' => fake()->numberBetween(101, 140),
             'maximum_batch_size' => fake()->numberBetween(170, 200),
-            'batching_date_type' => fake()->randomElement(BatchingDateTypeEnum::cases()),
+            'batching_date_type' => fake()->randomElement(BatchingDateTypeEnum::cases())->value,
         ];
     }
 }

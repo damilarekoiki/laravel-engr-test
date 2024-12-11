@@ -39,8 +39,8 @@ class ClaimTest extends TestCase
         $specialty = Specialty::factory()->create();
         $claimItems = ClaimItem::factory()->count(5)->make();
 
-        $response = $this->actingAs($user)
-        ->post('/api/claims', [
+       $this->actingAs($user)
+        ->postJson('/api/claims', [
             'insurer_code' => $insurer->code,
             'provider_name' => $provider->name,
             'specialty_id' => $specialty->id,
@@ -57,9 +57,28 @@ class ClaimTest extends TestCase
             'claim_id' => $claim_id
         ]);
     }
-    // test_claim_with_wrong_insurer_code_will_not_be_created
-    // test_claim_with_inexisting_provider_name_will_not_be_created
-    // test_claim_with_inexisting_specialty_id_will_not_be_created
+
+    public function test_claim_with_wrong_details_will_not_be_created() {
+        $user = User::factory()->create();
+        
+        $insurer = Insurer::factory()->create();
+        $provider = Provider::factory()->create();
+        $specialty = Specialty::factory()->create();
+
+        $response = $this->actingAs($user)
+        ->postJson('/api/claims', [
+            'insurer_code' => $insurer->batching_date_type,
+            'provider_name' => $provider->id,
+            'specialty_id' => $specialty->name,
+            'encounter_date' => now()->format('Y-m-d'),
+            'priority_level' => ClaimPriorityEnum::FOUR->value,
+            'claim_items' => []
+        ]);
+
+        $response->assertStatus(422)
+        ->assertJsonValidationErrors(['insurer_code', 'provider_name', 'specialty_id', 'claim_items']);
+    }
+
     // test_claim_was_correctly_batched
     // test_claim_belongs_to_insurer
 }
