@@ -20,7 +20,7 @@ class ClaimRepository extends AbstractRepository implements ClaimInterface {
     }
 
     public function store(array $data): Claim {
-        $claim = $this->model->create([...$data]);
+        $claim = $this->model->create($data);
         return $claim;
     }
 
