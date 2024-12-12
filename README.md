@@ -19,6 +19,8 @@ The UI is displayed on the root page
 
 The BatchClaimsCommand is the command that is meant to run daily to create claim batches
 
+Run `php artisan batch:claims` to batch the claims
+
 ## Batching Algorithm
 
 
