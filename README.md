@@ -11,6 +11,10 @@ Same way you would install a typical laravel application.
 
     npm run dev
 
+    php artisan migrate
+
+    php artisan db:seed
+
     php artisan serve
 
 The UI is displayed on the root page
