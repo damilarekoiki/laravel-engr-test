@@ -13,8 +13,11 @@ class Insurer extends Model
 
     protected $fillable = [
         'name',
-        'daily_processing_capacity',
+        'code',
+        'email',
+        'minimum_batch_size',
         'maximum_batch_size',
+        'daily_processing_capacity',
         'batching_date_type',
     ];
 

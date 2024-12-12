@@ -3,7 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Contracts\ClaimInterface;
+use App\Notifications\SendBatchClaimsNotification;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Notification;
 
 class BatchClaimsCommand extends Command
 {
@@ -35,7 +37,15 @@ class BatchClaimsCommand extends Command
     public function handle()
     {
         //
-        $this->claimRepository->batchClaims();
+        $batchedClaims = $this->claimRepository->batchClaims();
+
+        $notified_email = [];
+        foreach($batchedClaims as $batchedClaim) {
+            if(in_array($batchedClaim['insurer_email'], $notified_email)) {
+                continue;
+            }
+            Notification::route('mail', $batchedClaim['insurer_email'])->notify(new SendBatchClaimsNotification());
+        }
 
     }
 }

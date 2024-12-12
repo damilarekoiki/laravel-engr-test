@@ -22,7 +22,7 @@ class InsurerSpecialtyCostFactory extends Factory
             //
             'insurer_id' => Insurer::inRandomOrder()->value('id'),
             'specialty_id' => Specialty::inRandomOrder()->value('id'),
-            'percent_cost' => $this->faker->randomNumber(5),
+            'percent_cost' => $this->faker->randomNumber(3),
         ];
     }
 }

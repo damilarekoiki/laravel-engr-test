@@ -39,7 +39,7 @@ class ClaimRepository extends AbstractRepository implements ClaimInterface {
     }
 
 
-    public function batchClaims(): void {
+    public function batchClaims(): array {
         $claims = $this->model
         ->with(['insurer' => function ($query) {
             $query->with(['specialty_costs', 'priority_costs']);
@@ -55,7 +55,10 @@ class ClaimRepository extends AbstractRepository implements ClaimInterface {
 
         $batchedClaims = $this->claimService->batchClaims($claims);
 
+        $this->batchedClaimRepository->truncate();
         $this->batchedClaimRepository->storeMany($batchedClaims);
+
+        return $batchedClaims;
 
         // TODO: Add these comments to the Readme
 

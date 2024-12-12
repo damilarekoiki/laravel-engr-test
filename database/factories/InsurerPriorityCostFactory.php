@@ -21,7 +21,7 @@ class InsurerPriorityCostFactory extends Factory
         return [
             'insurer_id' => Insurer::inRandomOrder()->value('id'),
             'priority_level' => fake()->randomElement(ClaimPriorityEnum::cases())->value,
-            'percent_cost' => $this->faker->randomNumber(5),
+            'percent_cost' => $this->faker->randomNumber(3),
         ];
     }
 }

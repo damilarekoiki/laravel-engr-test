@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('insurers', function (Blueprint $table) {
+            $table->string('email');
             $table->integer('daily_processing_capacity');
             $table->integer('minimum_batch_size');
             $table->integer('maximum_batch_size');

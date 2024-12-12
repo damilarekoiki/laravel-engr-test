@@ -137,6 +137,7 @@ class ClaimService {
             'date' => $claimDate,
             'processing_cost' => $this->calculateProcessingCost($claim, $claimDate),
             'insurer_id' => $claim->insurer_id,
+            'insurer_email' => $claim->insurer->email,
             'total_amount' => $claim->total_amount
         ];
     }

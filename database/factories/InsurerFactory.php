@@ -23,6 +23,7 @@ class InsurerFactory extends Factory
         return [
             'name' => $name,
             'code' => Str::slug($name),
+            'email' => fake()->email(),
             'minimum_batch_size' => fake()->numberBetween(1, 100),
             'maximum_batch_size' => fake()->numberBetween(101, 140),
             'daily_processing_capacity' => fake()->numberBetween(170, 200),

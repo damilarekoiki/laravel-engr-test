@@ -11,5 +11,5 @@ interface ClaimInterface {
 
     public function storeClaimWithItems(array $data): void;
 
-    public function batchClaims(): void;
+    public function batchClaims(): array;
 }

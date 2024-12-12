@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('date');
             $table->decimal('processing_cost', 25, 2);
             $table->foreignId('insurer_id')->constrained();
+            $table->string('insurer_email');
             $table->decimal('total_amount', 25, 2);
             $table->timestamps();
         });

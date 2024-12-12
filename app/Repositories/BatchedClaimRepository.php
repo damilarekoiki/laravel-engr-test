@@ -15,8 +15,12 @@ class BatchedClaimRepository extends AbstractRepository implements BatchedClaimI
 
     }
 
+    public function truncate(): void {
+        $this->model->truncate();
+    }
+
     public function storeMany(array $data): void {
-        $this->model->insert($data);
+        $this->model->insertOrIgnore($data);
     }
 
 }

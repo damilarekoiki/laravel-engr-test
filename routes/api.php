@@ -9,7 +9,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         return $request->user();
     });
 
-    Route::prefix('claims')->group(function () {
-        Route::post('/', [ClaimController::class, 'store']);
-    });
+    
+});
+
+Route::prefix('/claims')->group(function () {
+    Route::post('/', [ClaimController::class, 'store']);
 });
