@@ -6,6 +6,8 @@ use App\Enums\ClaimPriorityEnum;
 use App\Models\Claim;
 use App\Models\ClaimItem;
 use App\Models\Insurer;
+use App\Models\InsurerPriorityCost;
+use App\Models\InsurerSpecialtyCost;
 use App\Models\Provider;
 use App\Models\Specialty;
 use App\Models\User;
@@ -77,6 +79,20 @@ class ClaimTest extends TestCase
 
         $response->assertStatus(422)
         ->assertJsonValidationErrors(['insurer_code', 'provider_name', 'specialty_id', 'claim_items']);
+    }
+
+    public function test_claims_are_batched() {
+        Insurer::factory(50)->create();
+        Provider::factory(50)->create();
+        Specialty::factory(50)->create();
+        Claim::factory(50)->create();
+        InsurerSpecialtyCost::factory(50)->create();
+        InsurerPriorityCost::factory(50)->create();
+        // $this->assertCount(0, Claim::all());
+
+        $this->artisan('batch:claims')->assertExitCode(0);
+
+        // $this->assertCount(1, Claim::all());
     }
 
     // test_claim_was_correctly_batched

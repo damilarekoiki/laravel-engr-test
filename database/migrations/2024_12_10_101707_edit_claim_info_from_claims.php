@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('encounter_date');
             $table->date('submission_date');
             $table->decimal('total_amount', 25, 2);
+            $table->timestamp('processed_at')->nullable();
             $table->dropTimestamps();
         });
     }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('insurer_priority_costs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('insurer_id')->constrained();
-            $table->integer('priority');
+            $table->integer('priority_level');
             $table->decimal('percent_cost', 5, 2);
             $table->timestamps();
         });

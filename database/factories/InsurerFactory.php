@@ -23,9 +23,9 @@ class InsurerFactory extends Factory
         return [
             'name' => $name,
             'code' => Str::slug($name),
-            'daily_processing_capacity' => fake()->numberBetween(1, 100),
-            'minimum_batch_size' => fake()->numberBetween(101, 140),
-            'maximum_batch_size' => fake()->numberBetween(170, 200),
+            'minimum_batch_size' => fake()->numberBetween(1, 100),
+            'maximum_batch_size' => fake()->numberBetween(101, 140),
+            'daily_processing_capacity' => fake()->numberBetween(170, 200),
             'batching_date_type' => fake()->randomElement(BatchingDateTypeEnum::cases())->value,
         ];
     }
