@@ -3,10 +3,9 @@
 namespace App\Providers;
 
 use App\Contracts\ClaimInterface;
-use App\Contracts\InsurerInterface;
-use App\Models\Claim;
+use App\Contracts\BatchedClaimInterface;
 use App\Repositories\ClaimRepository;
-use App\Repositories\InsurerRepository;
+use App\Repositories\BatchedClaimRepository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryProvider extends ServiceProvider
@@ -18,7 +17,7 @@ class RepositoryProvider extends ServiceProvider
     {
         //
         $this->app->bind(ClaimInterface::class, ClaimRepository::class);
-        $this->app->bind(InsurerInterface::class, InsurerRepository::class);
+        $this->app->bind(BatchedClaimInterface::class, BatchedClaimRepository::class);
 
     }
 

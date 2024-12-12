@@ -68,7 +68,7 @@ class ClaimService {
         } else {
             $claimDate = count($this->all_batched_claims) == 0
                 ? now()->format('Y-m-d')
-                : end($this->all_batched_claims)->get('date');
+                : end($this->all_batched_claims)['date'];
         }
 
         return $claimDate;
@@ -82,9 +82,9 @@ class ClaimService {
 
         foreach ($insurer_batched_claims as $key => $batched_claim) {
             if (
-                $batched_claim->get('total_amount') === $claim->get('total_amount') &&
-                $batched_claim->get('priority_level') === $claim->get('priority_level') &&
-                $batched_claim->get('insurer_specialty_percent_cost') === $claim->get('insurer_specialty_percent_cost')
+                $batched_claim['total_amount'] === $claim->total_amount &&
+                $batched_claim['priority_level'] === $claim->priority_level &&
+                $batched_claim['insurer_specialty_percent_cost'] === $claim->insurer_specialty_percent_cost
             ) {
                 $claim_having_same_sort_weight = $batched_claim;
                 $index = $key;
@@ -103,13 +103,13 @@ class ClaimService {
         return 20 + ( (30 * ($nthDay - 1)) / 29 );
     }
 
-    public function calculateSpecialtyCost($claim): float {
+    public function calculateSpecialtyPercentCost($claim): float {
         return $claim->insurer->specialty_costs
         ->firstWhere('specialty_id', $claim->specialty_id)
         ?->percent_cost ?? 0.0;
     }
 
-    public function calculatePriorityCost($claim): float {
+    public function calculatePriorityPercentCost($claim): float {
         return $claim->insurer->priority_costs
         ->firstWhere('priority_level', $claim->priority_level)
         ?->percent_cost ?? 0.0;
@@ -117,25 +117,28 @@ class ClaimService {
 
     public function calculateProcessingCost($claim, $claimDate): float {
         $day = (int) Carbon::parse($claimDate)->format('d');
-        $costOnMoneytaryValueOnNthDay = $this->calculatePercentCostOnMonetaryValueOnNthDay($day);
-        $costOnSpecialty = $this->calculateSpecialtyCost($claim);
-        $costOnPriority = $this->calculatePriorityCost($claim);
+        $percentCostOnMoneytaryValueOnNthDay = $this->calculatePercentCostOnMonetaryValueOnNthDay($day);
+        $percentCostOnSpecialty = $this->calculateSpecialtyPercentCost($claim);
+        $percentCostOnPriority = $this->calculatePriorityPercentCost($claim);
 
-        return $costOnMoneytaryValueOnNthDay + $costOnSpecialty + $costOnPriority;
+        $claim_total_amount = $claim->total_amount;
+
+        return ($claim_total_amount*($percentCostOnMoneytaryValueOnNthDay/100))
+        + ($claim_total_amount*($percentCostOnSpecialty/100))
+        + ($claim_total_amount*($percentCostOnPriority/100));
 
         
     }
 
     private function prepareBatchedClaimForStorage($claim, $claimDate) {
-        // $claimArray = $claim->toArray();
-        return collect([
+        return [
             'indentifier' => "{$claim->provider->name} $claimDate",
             'claim_id' => $claim->id,
             'date' => $claimDate,
             'processing_cost' => $this->calculateProcessingCost($claim, $claimDate),
             'insurer_id' => $claim->insurer_id,
             'total_amount' => $claim->total_amount
-        ]);
+        ];
     }
 
     private function incrementNumberOfClaimsBatchedForInsurerOnDate($insurer_id, $claimDate) {
@@ -159,9 +162,11 @@ class ClaimService {
             $insurer_id = $claim->insurer_id;
             $insurer_daily_processing_capacity = $claim->insurer->daily_processing_capacity;
 
+            $preferred_batching_date = $claim->insurer->batching_date_type;
+
             // All the claims that belong to an insurer
             $insurer_batched_claims = array_filter($this->all_batched_claims, function ($batched_claim) use ($insurer_id) {
-                return $batched_claim->get('insurer_id') == $insurer_id;
+                return $batched_claim['insurer_id'] == $insurer_id;
             }) ?? [];
 
             // This date determines the batch that a claim belongs to
@@ -177,9 +182,8 @@ class ClaimService {
             $claim_having_same_sort_weight = $this->getClaimHavingSameSortWeight($claim, $insurer_batched_claims);
 
             // If the claim has the same sort weight but differ in submission date
-            // TODO: use the preferred date set by insurer instead of submission date
             if (!empty($claim_having_same_sort_weight) &&
-                $claim_having_same_sort_weight?->get('submission_date') > $claim->submission_date
+                $claim_having_same_sort_weight[$preferred_batching_date] > $claim->$preferred_batching_date
             ) {
                 $date = $claim_having_same_sort_weight?->date;
 
@@ -206,11 +210,14 @@ class ClaimService {
                 
                 $this->incrementNumberOfClaimsBatchedForInsurerOnDate($insurer_id, $claimDate);
 
-                if(empty($last_claim) || $last_claim->get('date') < $claimDate) {
+                if(empty($last_claim) || $last_claim['date'] < $claimDate) {
                     $this->incrementNumberOfBatchedForInsurer($insurer_id);
                 }
             }
         }
+
+        return $this->all_batched_claims;
+
     }
 
 }

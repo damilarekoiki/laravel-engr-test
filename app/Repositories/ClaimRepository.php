@@ -1,25 +1,23 @@
 <?php
 namespace App\Repositories;
 
+use App\Contracts\BatchedClaimInterface;
 use App\Contracts\ClaimInterface;
-use App\Contracts\InsurerInterface;
 use App\Models\Claim;
-use App\Models\InsurerSpecialtyCost;
 use App\Services\ClaimService;
-use Carbon\Carbon;
 
 class ClaimRepository extends AbstractRepository implements ClaimInterface {
 
     private ClaimService $claimService;
-    private InsurerInterface $insurerRepository;
+    private BatchedClaimInterface $batchedClaimRepository;
 
-    public function __construct(Claim $claim, ClaimService $claimService, InsurerInterface $insurerRepository) {
+    public function __construct(Claim $claim, ClaimService $claimService, BatchedClaimInterface $batchedClaimRepository) {
 
         parent::__construct($claim);
 
         $this->model = $claim;
         $this->claimService = $claimService;
-        $this->insurerRepository = $insurerRepository;
+        $this->batchedClaimRepository = $batchedClaimRepository;
 
     }
 
@@ -40,6 +38,7 @@ class ClaimRepository extends AbstractRepository implements ClaimInterface {
         $this->storeClaimItems($claim, $data['claim_items']);
     }
 
+
     public function batchClaims(): void {
         $claims = $this->model
         ->with(['insurer' => function ($query) {
@@ -54,7 +53,9 @@ class ClaimRepository extends AbstractRepository implements ClaimInterface {
         ->groupBy('claims.id')
         ->get(); // Limit to the total processing capacity
 
-        $this->claimService->batchClaims($claims);
+        $batchedClaims = $this->claimService->batchClaims($claims);
+
+        $this->batchedClaimRepository->storeMany($batchedClaims);
 
         // TODO: Add these comments to the Readme
 

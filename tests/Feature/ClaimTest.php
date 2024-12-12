@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Enums\ClaimPriorityEnum;
+use App\Models\BatchedClaim;
 use App\Models\Claim;
 use App\Models\ClaimItem;
 use App\Models\Insurer;
@@ -88,13 +89,11 @@ class ClaimTest extends TestCase
         Claim::factory(50)->create();
         InsurerSpecialtyCost::factory(50)->create();
         InsurerPriorityCost::factory(50)->create();
-        // $this->assertCount(0, Claim::all());
+
+        $this->assertCount(0, BatchedClaim::all());
 
         $this->artisan('batch:claims')->assertExitCode(0);
 
-        // $this->assertCount(1, Claim::all());
+        $this->assertNotCount(0, BatchedClaim::all());
     }
-
-    // test_claim_was_correctly_batched
-    // test_claim_belongs_to_insurer
 }
