@@ -37,15 +37,20 @@ class BatchClaimsCommand extends Command
     public function handle()
     {
         //
+        $this->info('Batching...');
+
         $batchedClaims = $this->claimRepository->batchClaims();
 
-        $notified_email = [];
+        $this->info('Batching successful');
+
+
+        $notified_emails = [];
         foreach($batchedClaims as $batchedClaim) {
-            if(in_array($batchedClaim['insurer_email'], $notified_email)) {
+            if(in_array($batchedClaim['insurer_email'], $notified_emails)) {
                 continue;
             }
+            array_push($notified_emails, $batchedClaim['insurer_email']);
             Notification::route('mail', $batchedClaim['insurer_email'])->notify(new SendBatchClaimsNotification());
         }
-
     }
 }

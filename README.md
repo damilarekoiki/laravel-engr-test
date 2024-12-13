@@ -42,3 +42,6 @@ Run `php artisan batch:claims` to batch all the claims
 8. Once we generate the batches, we truncate the batched_claims table and insert the newb batch into it
 
 
+## Mail
+
+The email should appear in laravel.log file in your development environment
