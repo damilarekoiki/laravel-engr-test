@@ -10,7 +10,7 @@ class BatchedClaim extends Model
     use HasFactory;
 
     protected $fillable = [
-        'indentifier',
+        'identifier',
         'claim_id',
         'date',
         'processing_cost',

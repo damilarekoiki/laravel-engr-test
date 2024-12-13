@@ -132,7 +132,7 @@ class ClaimService {
 
     private function prepareBatchedClaimForStorage($claim, $claimDate) {
         return [
-            'indentifier' => "{$claim->provider->name} $claimDate",
+            'identifier' => "{$claim->provider->name} $claimDate",
             'claim_id' => $claim->id,
             'date' => $claimDate,
             'processing_cost' => $this->calculateProcessingCost($claim, $claimDate),

@@ -23,7 +23,14 @@ You can open the application to submit a claim
 
 ## Extra Notes
 
-The BatchClaimsCommand is the command that is meant to run daily to create claim batches
+The BatchClaimsCommand is the command that is meant to run daily to create claim batches in a way to reduce processing cost.
+
+To reduce processing cost, the batching is done in this manner, in order of importance.
+
+1. Moneytary value - I did many calculations on paper to know that this is most important. There is a linear progression in persent cost as time goes by.
+2. Priority level - Combines urgency with some charges.
+3. Cost of specialty - Combines efficiency with cost.
+4. Insurer preferred batching date - The date submitted or encountered is not much important that the above constraints.
 
 Run `php artisan migrate` to create all the necessary tables in the database
 

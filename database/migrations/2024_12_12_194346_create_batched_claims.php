@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('batched_claims', function (Blueprint $table) {
             $table->id();
-            $table->string('indentifier');
+            $table->string('identifier');
             $table->foreignId('claim_id')->constrained();
             $table->date('date');
             $table->decimal('processing_cost', 25, 2);
