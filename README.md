@@ -23,7 +23,11 @@ The UI is displayed on the root page
 
 The BatchClaimsCommand is the command that is meant to run daily to create claim batches
 
-Run `php artisan batch:claims` to batch the claims
+Run `php artisan migrate` to create all the necessary tables in the database
+
+Run `php artisan db:seed` to seed all the data into the database
+
+Run `php artisan batch:claims` to batch all the claims
 
 ## Batching Algorithm
 
