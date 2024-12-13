@@ -19,6 +19,8 @@ Same way you would install a typical laravel application.
 
 The UI is displayed on the root page
 
+You can open the application to submit a claim
+
 ## Extra Notes
 
 The BatchClaimsCommand is the command that is meant to run daily to create claim batches
@@ -28,6 +30,8 @@ Run `php artisan migrate` to create all the necessary tables in the database
 Run `php artisan db:seed` to seed all the data into the database
 
 Run `php artisan batch:claims` to batch all the claims
+
+Check `batched_claims` table to see the batched claims
 
 ## Batching Algorithm
 
