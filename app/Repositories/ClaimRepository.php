@@ -47,11 +47,11 @@ class ClaimRepository extends AbstractRepository implements ClaimInterface {
         ->whereNull('processed_at')
         ->join('insurers', 'insurers.id', '=', 'claims.insurer_id')
         ->join('insurer_specialty_costs', 'insurer_specialty_costs.insurer_id', '=', 'insurers.id')
-        ->orderBy('total_amount', 'DESC')
-        ->orderBy('priority_level', 'DESC')
-        ->orderBy('insurer_specialty_costs.percent_cost', 'DESC') // Secondary sorting by orders
+        ->orderBy('total_amount', 'DESC')  // Most important constraint
+        ->orderBy('priority_level', 'DESC') // Priority level comes next
+        ->orderBy('insurer_specialty_costs.percent_cost', 'DESC') // Then specialty cost
         ->groupBy('claims.id')
-        ->get(); // Limit to the total processing capacity
+        ->get();
 
         $batchedClaims = $this->claimService->batchClaims($claims);
 

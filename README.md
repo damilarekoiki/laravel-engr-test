@@ -56,3 +56,7 @@ Check `batched_claims` table to see the batched claims
 ## Mail
 
 The email should appear in laravel.log file in your development environment
+
+## Test
+
+Run `php artisan test` to see if any test fails

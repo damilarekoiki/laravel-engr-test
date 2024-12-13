@@ -150,7 +150,7 @@ class ClaimService {
         }
     }
 
-    private function incrementNumberOfBatchedForInsurer($insurer_id) {
+    private function incrementNumberOfBatchesMadeForInsurer($insurer_id) {
         if(isset($this->number_of_batches_made_for_insurer[$insurer_id])) {
             $this->number_of_batches_made_for_insurer[$insurer_id] += 1;
         } else {
@@ -212,7 +212,7 @@ class ClaimService {
                 $this->incrementNumberOfClaimsBatchedForInsurerOnDate($insurer_id, $claimDate);
 
                 if(empty($last_claim) || $last_claim['date'] < $claimDate) {
-                    $this->incrementNumberOfBatchedForInsurer($insurer_id);
+                    $this->incrementNumberOfBatchesMadeForInsurer($insurer_id);
                 }
             }
         }
