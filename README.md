@@ -57,10 +57,21 @@ Check `batched_claims` table to see the batched claims
 
 The email should appear in laravel.log file in your development environment
 
-## Validation
+## Claim Submission Controller and Validation
 
-Validation for claim submission is done in ClaimRequest.php
+`ClaimController.php` is used to handle requests from the client
+Validation for claim submission is done in `ClaimRequest.php`
+
+## Data Access and Business Loggic
+
+`ClaimRepository.php` is used to access claim data from database while `ClaimService.php` is used to transform data that relate to claim
+
+`ClaimRepository.php` is used to access batched claim data from database
+
+The repository classes are registered in `RepositoryProvider.php`
+
+
 
 ## Test
 
-Run `php artisan test` to see if any test fails
+Run `php artisan test` to see if any test fails. The tests are written in `ClaimTest.php`
