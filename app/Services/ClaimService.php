@@ -84,7 +84,7 @@ class ClaimService {
             if (
                 $batched_claim['total_amount'] === $claim->total_amount &&
                 $batched_claim['priority_level'] === $claim->priority_level &&
-                $batched_claim['insurer_specialty_percent_cost'] === $claim->insurer_specialty_percent_cost
+                $batched_claim['insurer_specialty_percent_cost'] === $claim->insurer->specialty_costs->firstWhere('specialty_id', $claim->specialty_id)?->percent_cost
             ) {
                 $claim_having_same_sort_weight = $batched_claim;
                 $index = $key;
@@ -93,7 +93,7 @@ class ClaimService {
         }
 
         if($claim_having_same_sort_weight) {
-            $claim_having_same_sort_weight->arrayIndex = $index;
+            $claim_having_same_sort_weight['arrayIndex'] = $index;
         }
 
         return $claim_having_same_sort_weight;
@@ -137,8 +137,12 @@ class ClaimService {
             'date' => $claimDate,
             'processing_cost' => $this->calculateProcessingCost($claim, $claimDate),
             'insurer_id' => $claim->insurer_id,
+            'insurer_specialty_percent_cost' => $claim->insurer->specialty_costs->firstWhere('specialty_id', $claim->specialty_id)?->percent_cost ?? null,
+            'priority_level' => $claim->priority_level,
             'insurer_email' => $claim->insurer->email,
-            'total_amount' => $claim->total_amount
+            'total_amount' => $claim->total_amount,
+            'encounter_date' => $claim->encounter_date,
+            'submission_date' => $claim->submission_date,
         ];
     }
 
@@ -186,7 +190,7 @@ class ClaimService {
             if (!empty($claim_having_same_sort_weight) &&
                 $claim_having_same_sort_weight[$preferred_batching_date] > $claim->$preferred_batching_date
             ) {
-                $date = $claim_having_same_sort_weight?->date;
+                $date = $claim_having_same_sort_weight['date'];
 
                 $claimDate = $this->getProcessingDateOfClaim($insurer_id, $insurer_daily_processing_capacity, $date);
 
@@ -194,7 +198,7 @@ class ClaimService {
                 // then we move claim to the front of it.
                 if($claimDate == $date) {
                     $batched = $this->prepareBatchedClaimForStorage($claim, $claimDate);
-                    array_splice($this->all_batched_claims, $claim_having_same_sort_weight->arrayIndex, 0, $batched);
+                    array_splice($this->all_batched_claims, $claim_having_same_sort_weight['arrayIndex'], 0, $batched);
                     $inserted = true;
                     $this->incrementNumberOfClaimsBatchedForInsurerOnDate($insurer_id, $claimDate);
                     continue;

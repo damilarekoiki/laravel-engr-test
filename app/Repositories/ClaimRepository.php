@@ -41,6 +41,7 @@ class ClaimRepository extends AbstractRepository implements ClaimInterface {
 
     public function batchClaims(): array {
         $claims = $this->model
+        ->select('claims.*')
         ->with(['provider', 'insurer' => function ($query) {
             $query->with(['specialty_costs', 'priority_costs']);
         }])
