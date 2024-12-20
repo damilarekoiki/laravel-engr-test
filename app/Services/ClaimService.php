@@ -1,7 +1,9 @@
 <?php
 namespace App\Services;
 
+use App\Models\Claim;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 
 class ClaimService {
 
@@ -10,9 +12,9 @@ class ClaimService {
     private $all_batched_claims = [];
 
     public function __construct() {
-        $this->number_of_batches_made_for_insurer = []; // T
-        $this->number_of_claims_batched_for_insurer = []; // insurer_id => numberOfClaims
-        $this->all_batched_claims = []; // [$claims]
+        $this->number_of_batches_made_for_insurer = [];
+        $this->number_of_claims_batched_for_insurer = [];
+        $this->all_batched_claims = [];
     }
 
     public function calculateTotalAmount(array $claimItems): float {
@@ -74,7 +76,7 @@ class ClaimService {
         return $claimDate;
     }
 
-    private function getClaimHavingSameSortWeight($claim, $insurer_batched_claims) {
+    private function getClaimHavingSameSortWeight(Claim $claim, array $insurer_batched_claims) {
 
         $claim_having_same_sort_weight = null;
 
@@ -162,7 +164,7 @@ class ClaimService {
         }
     }
 
-    public function batchClaims($claims) {
+    public function batchClaims(Collection $claims) {
         foreach ($claims as $claim) {
             $insurer_id = $claim->insurer_id;
             $insurer_daily_processing_capacity = $claim->insurer->daily_processing_capacity;

@@ -19,7 +19,6 @@ class ClaimController extends Controller
     }
 
     public function store(ClaimRequest $request) {
-        logger('got here');
         $claimData = $request->validated();
         
         $claimData = $this->claimService->prepareClaimData($claimData);
